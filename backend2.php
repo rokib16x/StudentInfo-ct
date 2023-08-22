@@ -35,7 +35,14 @@ if (mysqli_connect_errno()) {
                         $status = "ERROR";
                         $content = "Error deleting student.";
                     }
-                } else {
+                }
+
+                if ($status === "failed") {
+                    $deleteQuery = "DELETE FROM student WHERE ID = $studentId";
+                    mysqli_query($link, $deleteQuery);
+                }
+                
+                else {
                     $content = "Student status is not 'passed'.";
                 }
             }

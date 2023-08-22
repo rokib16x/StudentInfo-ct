@@ -7,68 +7,82 @@
 </head>
 <body>
     <h1>Check Student Status</h1>
+    <!-- A form to input the student ID -->
     <form id="statusForm">
         <label for="studentId">Enter Student ID:</label>
         <input type="text" id="studentId" name="studentId" required>
         <button type="submit">Check Status</button>
     </form>
+    <!-- A container to display student information or messages -->
     <div id="studentInfo"></div>
 
     <script>
+        // Add a submit event listener to the form
         document.getElementById("statusForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-            var studentId = document.getElementById("studentId").value;
-            checkStudentStatus(studentId);
+            event.preventDefault(); // Prevent the form from submitting normally
+            var studentId = document.getElementById("studentId").value; // Get the entered student ID
+            checkStudentStatus(studentId); // Call the function to check student status
         });
 
+        // Function to check student status using AJAX
         function checkStudentStatus(studentId) {
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "backend2.php?id=" + studentId, true);
+            xhr.open("GET", "backend2.php?id=" + studentId, true); // Prepare the AJAX request
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    displayStudentInfo(response);
+                    var response = JSON.parse(xhr.responseText); // Parse the JSON response
+                    displayStudentInfo(response); // Call the function to display student info
                 }
             };
-            xhr.send();
+            xhr.send(); // Send the AJAX request
         }
 
+        // Function to display student information or messages
         function displayStudentInfo(response) {
-            var studentInfoDiv = document.getElementById("studentInfo");
-            studentInfoDiv.innerHTML = "";
+            var studentInfoDiv = document.getElementById("studentInfo"); // Get the info container
+            studentInfoDiv.innerHTML = ""; // Clear the container content
 
+            // Check if the response status is "OK"
             if (response.status === "OK") {
-                var student = response.content;
-                var studentInfo = document.createElement("div");
+                var student = response.content; // Get the student data from the response
+                var studentInfo = document.createElement("div"); // Create a new div element
                 studentInfo.innerHTML = `
                     <p><strong>ID:</strong> ${student.ID}</p>
                     <p><strong>Name:</strong> ${student.name}</p>
                     <p><strong>Email:</strong> ${student.email}</p>
                     <p><strong>Status:</strong> ${student.status}</p>
-                `;
+                `; // Set the student information HTML
+
+                // Check if the student's status is "passed"
                 if (student.status === "passed") {
                     studentInfo.innerHTML += `<p><button onclick="deleteStudent(${student.ID})">Delete Student</button></p>`;
+                } else if (student.status === "failed") {
+                    studentInfo.innerHTML += `<p><button onclick="deleteStudent(${student.ID})">Delete Student</button></p>`;
+                    deleteStudent(student.ID); // Call the deleteStudent function directly
                 }
-                studentInfoDiv.appendChild(studentInfo);
+
+                studentInfoDiv.appendChild(studentInfo); // Append the student info to the container
+
             } else {
-                studentInfoDiv.innerHTML = "<p>Student not found.</p>";
+                studentInfoDiv.innerHTML = "<p>Student not found.</p>"; // Display a message if student not found
             }
         }
 
+        // Function to delete a student
         function deleteStudent(studentId) {
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "backend2.php?delete=" + studentId, true);
+            xhr.open("GET", "backend2.php?delete=" + studentId, true); // Prepare the delete request
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
+                    var response = JSON.parse(xhr.responseText); // Parse the JSON response
                     if (response.status === "OK") {
-                        alert("Student deleted successfully.");
+                        alert("Student deleted successfully."); // Show success message
                     } else {
-                        alert("Error deleting student.");
+                        alert("Error deleting student."); // Show error message
                     }
                 }
             };
-            xhr.send();
+            xhr.send(); // Send the delete request
         }
     </script>
 </body>

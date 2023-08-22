@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ERROR | E_PARSE); // Set error reporting to only show critical errors
+error_reporting(E_ERROR | E_PARSE);
 
 $link = mysqli_connect("localhost", "root", "", "studentinfo");
 

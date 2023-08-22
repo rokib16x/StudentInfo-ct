@@ -3,19 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student</title>
+    <title>Student List</title>
+    <style>
+        /* Align text to center */
+        body {
+            text-align: center;
+        }
+
+        /* Add margin to the top of the heading */
+        h1 {
+            margin: 20px 0;
+        }
+
+        /* Styling for individual student info boxes */
+        .studentInfo {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Student Information</h1>
+    <h1>Student List</h1>
     <button id="viewButton">View Students</button>
     <div id="studentList"></div>
 
     <script>
+        // Add a click event listener to the "View Students" button
         document.getElementById("viewButton").addEventListener("click", function() {
             var xhr = new XMLHttpRequest();
             xhr.open("GET", "backend.php", true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
+                    // Parse the JSON response and call the displayStudents function
                     var studentList = JSON.parse(xhr.responseText).content;
                     displayStudents(studentList);
                 }
@@ -23,20 +44,23 @@
             xhr.send();
         });
 
+        // Function to display the list of students
         function displayStudents(studentList) {
             var studentListDiv = document.getElementById("studentList");
-            studentListDiv.innerHTML = "";
+            studentListDiv.innerHTML = ""; // Clear any existing content
 
+            // Loop through the studentList array and create student info boxes
             for (var i = 0; i < studentList.length; i++) {
                 var student = studentList[i];
                 var studentInfo = document.createElement("div");
+                studentInfo.className = "studentInfo"; // Apply the studentInfo class
                 studentInfo.innerHTML = `
                     <p><strong>ID:</strong> ${student.ID}</p>
                     <p><strong>Name:</strong> ${student.name}</p>
                     <p><strong>Email:</strong> ${student.email}</p>
                     <p><strong>Status:</strong> ${student.status}</p>
                 `;
-                studentListDiv.appendChild(studentInfo);
+                studentListDiv.appendChild(studentInfo); // Append student info box to the container
             }
         }
     </script>
