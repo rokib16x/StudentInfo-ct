@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student</title>
+</head>
+<body>
+    <h1>Student Information</h1>
+    <button id="viewButton">View Students</button>
+    <div id="studentList"></div>
+
+    <script>
+        document.getElementById("viewButton").addEventListener("click", function() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "backend.php", true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var studentList = JSON.parse(xhr.responseText).content;
+                    displayStudents(studentList);
+                }
+            };
+            xhr.send();
+        });
+
+        function displayStudents(studentList) {
+            var studentListDiv = document.getElementById("studentList");
+            studentListDiv.innerHTML = "";
+
+            for (var i = 0; i < studentList.length; i++) {
+                var student = studentList[i];
+                var studentInfo = document.createElement("div");
+                studentInfo.innerHTML = `
+                    <p><strong>ID:</strong> ${student.ID}</p>
+                    <p><strong>Name:</strong> ${student.name}</p>
+                    <p><strong>Email:</strong> ${student.email}</p>
+                    <p><strong>Status:</strong> ${student.status}</p>
+                `;
+                studentListDiv.appendChild(studentInfo);
+            }
+        }
+    </script>
+</body>
+</html>
